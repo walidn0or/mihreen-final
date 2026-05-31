@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
+import { siteLogo, siteLogoHeight, siteLogoWidth, siteName } from "@/lib/site"
 
 const navItems = [
   { label: "Home", href: "/", match: "home" as const },
@@ -71,10 +72,10 @@ export function Header() {
       <div className="page-container flex w-full items-center justify-between">
         <Link href="/" className="flex shrink-0 items-center">
           <Image
-            src="/logo.png"
-            alt="Mihreen LLC"
-            width={140}
-            height={50}
+            src={siteLogo}
+            alt={siteName}
+            width={siteLogoWidth}
+            height={siteLogoHeight}
             className="h-9 w-auto md:h-10"
             loading="eager"
             priority

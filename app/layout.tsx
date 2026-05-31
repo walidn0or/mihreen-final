@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Sora, DM_Sans } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { HashScrollHandler } from "@/components/hash-scroll-handler"
-import { siteDescription, siteName, siteUrl } from "@/lib/site"
+import { siteDescription, siteLogo, siteName, siteUrl } from "@/lib/site"
 import "./globals.css"
 
 const sora = Sora({
@@ -65,8 +65,11 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: "/icon.svg",
+    icon: [
+      { url: siteLogo, type: "image/svg+xml" },
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    apple: "/apple-icon.png",
   },
 }
 
