@@ -1,184 +1,363 @@
 "use client"
 
-import { useRef } from "react"
-import { useInView } from "@/hooks/use-in-view"
-import { Mountain, Building2, ShoppingBag, Warehouse, Truck, ArrowRight } from "lucide-react"
-import { cn } from "@/lib/utils"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { ContactSectionLink } from "@/components/contact-section-link"
 
-const services = [
+import {
+  Pickaxe,
+  Building2,
+  Truck,
+  Warehouse,
+  PackageCheck,
+  ArrowRight,
+} from "lucide-react"
+
+const miningExtractionCapabilities = [
   {
-    icon: Mountain,
-    title: "Mining Extraction",
-    description:
-      "Mihreen LLC delivers comprehensive mining extraction solutions designed to maximize resource recovery while ensuring safety, efficiency, and environmental responsibility. Our expertise spans from early-stage site assessment to full-scale production.",
-    details: [
-      "Exploration Support & Resource Identification: Geological mapping and sampling, mineralized zone identification, consultant coordination, and preliminary feasibility support.",
-      "Mine Development: Site clearing and preparation, access road construction, infrastructure setup, and mine planning/layout support.",
-      "Extraction Operations: Surface mining support, underground support where applicable, drilling/blasting coordination, and controlled hauling/material handling.",
-      "Ore Handling & Processing Support: Ore collection and transportation, stockpile management, and crushing/screening support.",
-      "Safety & Environmental Management: Strict safety protocols, workforce training, environmental impact mitigation, waste management, and rehabilitation support.",
-      "Equipment & Resources: Excavators and loaders, drilling equipment, haulage trucks, and experienced on-site operational teams.",
-      "Sustainability Commitment: Controlled resource extraction, environmental monitoring practices, and land rehabilitation support.",
+    title: "1. Exploration Support & Resource Identification",
+    intro:
+      "We assist in identifying viable mineral deposits through structured fieldwork and technical analysis.",
+    items: [
+      "Geological mapping and sampling",
+      "Identification of mineralized zones (including gold-bearing formations)",
+      "Coordination with geological consultants",
+      "Preliminary feasibility support",
     ],
   },
   {
-    icon: Building2,
-    title: "Construction & Rehabilitation",
-    description: "We deliver high-quality construction and rehabilitation services tailored to client requirements.",
-    details: [
-      "Civil and buildings construction",
-      "Rehabilitation and upgrades",
-      "Quality and safety management",
+    title: "2. Mine Development",
+    intro: "We prepare sites for safe and efficient extraction operations.",
+    items: [
+      "Site clearing and preparation",
+      "Access road construction",
+      "Establishment of operational infrastructure",
+      "Mine planning and layout design",
     ],
   },
   {
-    icon: ShoppingBag,
-    title: "Procurement & Supply",
-    description:
-      "We provide end-to-end procurement services for IT systems/networks, power equipment, and office/project supplies.",
-    details: [
-      "IT hardware and equipment",
-      "Power tools and equipment",
-      "Office and project requirements/equipment",
+    title: "3. Extraction Operations",
+    intro:
+      "We conduct controlled and efficient extraction using industry best practices.",
+    items: [
+      "Surface mining (open-pit operations)",
+      "Underground mining support (where applicable)",
+      "Drilling and blasting coordination",
+      "Excavation, hauling, and material handling",
     ],
   },
   {
-    icon: Warehouse,
-    title: "Warehouse Management",
-    description:
-      "We offer efficient storage and inventory management solutions to support safe storages and smooth operations.",
-    details: [
-      "Inventory tracking and control",
-      "Storage and distribution",
-      "Stock auditing and reporting",
+    title: "4. Ore Handling & Processing Support",
+    intro:
+      "We ensure extracted materials are efficiently managed and prepared for further processing.",
+    items: [
+      "Ore collection and transportation",
+      "Stockpile management",
+      "Crushing and screening support",
     ],
   },
   {
-    icon: Truck,
-    title: "Logistics & Transportation",
-    description: "We provide reliable transportation for consignments and materials with a focus on safety, compliance, and timely delivery.",
-    details: [
-      "Logistics coordination",
-      "Trucks provision and management",
-      "Safety and compliance monitoring",
+    title: "5. Safety & Environmental Management",
+    intro:
+      "Safety and environmental responsibility are central to all our mining operations.",
+    items: [
+      "Implementation of strict safety protocols",
+      "Workforce safety training and supervision",
+      "Environmental impact mitigation",
+      "Waste management and site rehabilitation support",
     ],
   },
 ]
 
-export function ServicesSection() {
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const isInView = useInView(sectionRef, { threshold: 0.1 })
+const miningExtractionExtraSections = [
+  {
+    title: "Equipment & Resources",
+    intro:
+      "We deploy suitable machinery and skilled personnel to ensure efficient operations:",
+    items: [
+      "Excavators and loaders",
+      "Drilling equipment",
+      "Haulage trucks",
+      "On-site operational teams and supervisors",
+    ],
+  },
+  {
+    title: "Why Choose Mihreen LLC for Mining Operations",
+    items: [
+      "Strong operational discipline in remote and complex environments",
+      "Commitment to safety and regulatory compliance",
+      "Efficient resource utilization and cost control",
+      "Reliable delivery aligned with project timelines",
+      "Flexible solutions tailored to client requirements",
+    ],
+  },
+  {
+    title: "Sustainability Commitment",
+    intro:
+      "We are committed to responsible mining practices that minimize environmental impact and support long-term sustainability.",
+    items: [
+      "Land rehabilitation support",
+      "Controlled resource extraction",
+      "Environmental monitoring practices",
+    ],
+  },
+]
 
+function MiningExtractionModalSection({
+  title,
+  intro,
+  items,
+}: {
+  title: string
+  intro?: string
+  items?: string[]
+}) {
   return (
-    <section
-      id="services"
-      ref={sectionRef}
-      className="py-24 md:py-32 bg-background"
-    >
-      <div className="container mx-auto px-6">
-        {/* Section Header */}
-        <div
-          className={cn(
-            "text-center max-w-3xl mx-auto mb-16 transition-all duration-700",
-            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          )}
-        >
-          <span className="text-xs md:text-sm font-semibold text-primary uppercase tracking-[0.18em] mb-3 block">
-            Our Services
-          </span>
-          <h2 className="section-title text-3xl md:text-4xl lg:text-5xl text-foreground mb-5 text-balance">
-            Professional Multi-Sector Services
-          </h2>
-          <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            Mihreen LLC offers a wide range of professional services designed to support resource extraction, infrastructure development, and operational efficiency. Explore our specialized service areas below.
+    <div className="service-modal-capability">
+      <h4 className="service-modal-capability-title">{title}</h4>
+      {intro ? <p className="service-modal-capability-intro">{intro}</p> : null}
+      {items ? (
+        <ul className="service-modal-capability-list">
+          {items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      ) : null}
+      <hr className="service-modal-divider" />
+    </div>
+  )
+}
+
+type ServicePageContent = {
+  heading: string
+  intro: string
+  listHeading: string
+  items: string[]
+  closingLabel: string
+  closingText: string
+}
+
+function ServicePageModalContent({
+  heading,
+  intro,
+  listHeading,
+  items,
+  closingLabel,
+  closingText,
+}: ServicePageContent) {
+  return (
+    <div className="service-modal-doc">
+      <DialogTitle className="service-modal-heading">{heading}</DialogTitle>
+      <p className="service-modal-text">{intro}</p>
+      <p className="service-modal-list-heading">{listHeading}</p>
+      <ul className="service-modal-capability-list">
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+      <p className="service-modal-closing-label">{closingLabel}</p>
+      <p className="service-modal-closing-text">{closingText}</p>
+    </div>
+  )
+}
+
+function MiningExtractionModalContent() {
+  return (
+    <div className="service-modal-doc">
+      <DialogTitle className="service-modal-heading">
+        Mining Extraction Services
+      </DialogTitle>
+      <p className="service-modal-text">
+        Mihreen LLC delivers comprehensive mining extraction solutions designed
+        to maximize resource recovery while ensuring safety, efficiency, and
+        environmental responsibility. Our expertise spans from early-stage site
+        assessment to full-scale production, supporting clients with reliable
+        and results-driven operations.
+      </p>
+      <p className="service-modal-text">
+        We combine technical knowledge, modern equipment, and disciplined
+        operational processes to deliver consistent performance in challenging
+        environments.
+      </p>
+      <hr className="service-modal-divider" />
+      <h3 className="service-modal-heading">Our Capabilities</h3>
+      {miningExtractionCapabilities.map((capability) => (
+        <MiningExtractionModalSection
+          key={capability.title}
+          title={capability.title}
+          intro={capability.intro}
+          items={capability.items}
+        />
+      ))}
+      {miningExtractionExtraSections.map((section) => (
+        <MiningExtractionModalSection
+          key={section.title}
+          title={section.title}
+          intro={section.intro}
+          items={section.items}
+        />
+      ))}
+      <hr className="service-modal-divider" />
+      <div className="service-modal-footer">
+        <p className="service-modal-closing-text">
+          Partner with Mihreen LLC for dependable and efficient mining extraction
+          services.
+        </p>
+        <ContactSectionLink className="btn-primary service-modal-end-btn">
+          Contact Us
+          <ArrowRight className="h-4 w-4" aria-hidden />
+        </ContactSectionLink>
+      </div>
+    </div>
+  )
+}
+
+const services = [
+  {
+    title: "Mining Extraction",
+    icon: Pickaxe,
+    description:
+      "Comprehensive mining extraction solutions focused on safety, efficiency, and environmentally responsible resource recovery.",
+    modal: "mining" as const,
+  },
+  {
+    title: "Construction & Rehabilitation",
+    icon: Building2,
+    description:
+      "High-quality construction and rehabilitation services tailored to each client requirement.",
+    modal: "page" as const,
+    pageContent: {
+      heading: "Construction & Rehabilitation",
+      intro:
+        "We deliver high-quality construction and rehabilitation services tailored to client requirements.",
+      listHeading: "Our Services Include:",
+      items: [
+        "Civil and Buildings construction",
+        "Rehabilitation and upgrades",
+        "Quality and safety management",
+      ],
+      closingLabel: "Our Commitment:",
+      closingText:
+        "Deliver on time durable and cost-effective solutions within budgets.",
+    },
+  },
+  {
+    title: "Procurement & Supply",
+    icon: PackageCheck,
+    description:
+      "End-to-end procurement for IT systems, power equipment, and office or project supplies.",
+    modal: "page" as const,
+    pageContent: {
+      heading: "Procurement & Supply Solutions",
+      intro:
+        "We provide end-to-end procurement services for IT systems/networks, power equipment, and office/project supplies.",
+      listHeading: "We Supply:",
+      items: [
+        "IT hardware and equipment",
+        "Power tools and equipment",
+        "Office and project requirements/equipment",
+      ],
+      closingLabel: "Our Strength:",
+      closingText:
+        "Global sourcing capabilities ensuring quality, cost-efficiency, and timely delivery.",
+    },
+  },
+  {
+    title: "Warehouse Management",
+    icon: Warehouse,
+    description:
+      "Efficient storage and inventory management that supports safe warehousing and smooth operations.",
+    modal: "page" as const,
+    pageContent: {
+      heading: "Warehouse Management",
+      intro:
+        "We offer efficient storage and inventory management solutions to support safe storages and smooth operations.",
+      listHeading: "Key Services:",
+      items: [
+        "Inventory tracking and control",
+        "Storage and distribution",
+        "Stock auditing and reporting",
+        "Secure warehouse operations",
+      ],
+      closingLabel: "Outcome:",
+      closingText:
+        "Improved efficiency, reduced losses, and better supply chain management.",
+    },
+  },
+  {
+    title: "Logistics & Transportation",
+    icon: Truck,
+    description:
+      "Reliable transportation for consignments and materials with safety, compliance, and timely delivery.",
+    modal: "page" as const,
+    pageContent: {
+      heading: "Transportation Services",
+      intro: "We provide reliable transportation for consignments and materials.",
+      listHeading: "Our Services Include:",
+      items: [
+        "Logistics coordination",
+        "Trucks Provision and Management",
+        "Safety and compliance monitoring",
+      ],
+      closingLabel: "Our Goal:",
+      closingText: "Ensuring timely and secure delivery and transportation.",
+    },
+  },
+]
+
+export function ServicesSection() {
+  return (
+    <section id="services">
+      <div className="page-container">
+        <div className="services-section-intro text-center mb-16">
+          <h2 className="section-title">Our Services</h2>
+          <p className="section-subtitle mx-auto">
+            Mihreen LLC offers a wide range of professional services designed
+            to support resource extraction, infrastructure development, and
+            operational efficiency.
+          </p>
+          <p className="section-subtitle mx-auto mb-0">
+            Explore our specialized service areas below.
           </p>
         </div>
 
-        {/* Distinct Services Cards */}
-        <div className="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-6 gap-6 items-stretch">
-          {services.map((service, index) => {
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => {
             const Icon = service.icon
+
             return (
-              <div
-                key={service.title}
-                className={cn(
-                  "w-full sm:col-span-1 lg:col-span-2",
-                  index === 3 && "lg:col-start-2",
-                  index === 4 && "lg:col-start-4"
-                )}
-              >
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <button
-                      type="button"
-                      className={cn(
-                        "group relative overflow-hidden rounded-2xl border border-border/80 bg-card/95 p-6 md:p-7 transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/25 h-full w-full text-center cursor-pointer",
-                        isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                      )}
-                      style={{ transitionDelay: `${index * 90}ms` }}
-                    >
-                      <div className="absolute -right-12 -top-12 h-28 w-28 rounded-full bg-primary/10 blur-2xl transition-all duration-500 group-hover:bg-secondary/15" />
-                      <div className="relative flex flex-col items-center text-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-muted text-primary border border-primary/15 flex items-center justify-center transition-all duration-300 group-hover:bg-primary/10 group-hover:border-primary/30">
-                          <Icon className="w-5 h-5" strokeWidth={2.2} />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="section-subtitle text-lg md:text-xl text-foreground mb-2.5 transition-colors duration-300 group-hover:text-primary">
-                            {service.title}
-                          </h3>
-                          <p className="text-sm md:text-[15px] leading-7 text-muted-foreground">
-                            {service.description}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="relative mt-5 flex items-center justify-center gap-2 pt-4 border-t border-border/70">
-                        <span className="text-xs font-medium uppercase tracking-[0.14em] text-primary/80">View details</span>
-                        <ArrowRight className="w-4.5 h-4.5 text-primary transition-transform duration-300 group-hover:translate-x-1" />
-                      </div>
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent className="flex h-[min(85vh,800px)] w-[calc(100%-2rem)] max-w-2xl flex-col gap-0 overflow-hidden rounded-2xl border-border/80 p-0 shadow-lg sm:max-w-2xl">
-                    <div className="h-1 w-full shrink-0 bg-gradient-to-r from-primary via-secondary to-primary" />
-                    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-                      <div className="p-6 pb-8 pr-12 pt-6 md:p-8 md:pb-10 md:pr-14 md:pt-8">
-                        <DialogHeader className="text-left">
-                          <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <Icon className="h-5 w-5" />
-                          </div>
-                          <DialogTitle className="section-subtitle text-2xl">{service.title}</DialogTitle>
-                          <DialogDescription className="mt-2 text-[15px] leading-7 md:text-base">
-                            {service.description}
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="mt-6 rounded-xl border border-border/70 bg-muted/50 p-5">
-                          <h4 className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-primary">
-                            Capabilities
-                          </h4>
-                          <ul className="space-y-3">
-                            {service.details.map((detail) => (
-                              <li
-                                key={detail}
-                                className="flex items-start gap-3 text-sm leading-6 text-foreground/85 md:text-[15px]"
-                              >
-                                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-secondary" />
-                                <span>{detail}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
+              <Dialog key={service.title}>
+                <DialogTrigger asChild>
+                  <button type="button" className="svc-card text-left cursor-pointer">
+                    <div className="svc-icon">
+                      <Icon className="h-5 w-5" />
                     </div>
-                  </DialogContent>
-                </Dialog>
-              </div>
+
+                    <h3>{service.title}</h3>
+
+                    <p>{service.description}</p>
+
+                    <span className="svc-link">
+                      Learn More →
+                    </span>
+                  </button>
+                </DialogTrigger>
+
+                <DialogContent
+                  aria-describedby={undefined}
+                  className="service-modal service-modal--detailed border-0 data-[state=open]:zoom-in-100 data-[state=closed]:zoom-out-100"
+                >
+                  {service.modal === "mining" ? (
+                    <MiningExtractionModalContent />
+                  ) : (
+                    <ServicePageModalContent {...service.pageContent} />
+                  )}
+                </DialogContent>
+              </Dialog>
             )
           })}
         </div>

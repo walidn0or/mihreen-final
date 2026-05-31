@@ -1,34 +1,72 @@
-import type { Metadata } from 'next'
-import { Poppins } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import { ThemeProvider } from '@/components/theme-provider'
-import './globals.css'
+import type { Metadata } from "next"
+import { Sora, DM_Sans } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
+import { HashScrollHandler } from "@/components/hash-scroll-handler"
+import { siteDescription, siteName, siteUrl } from "@/lib/site"
+import "./globals.css"
 
-const poppins = Poppins({
+const sora = Sora({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-sora",
+  display: "swap",
+})
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-dm",
+  display: "swap",
 })
 
 export const metadata: Metadata = {
-  title: 'Mihreen LLC | Innovative Government Solutions',
-  description: 'Mihreen LLC provides cutting-edge logistics and technology solutions for government agencies. Delivering excellence with integrity.',
-  generator: 'v0.app',
-  icons: {
-    icon: [
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: `${siteName} | Mining, Construction & Professional Services`,
+    template: `%s | ${siteName}`,
+  },
+  description: siteDescription,
+  keywords: [
+    "Mihreen LLC",
+    "mining extraction",
+    "construction services",
+    "procurement and supply",
+    "warehouse management",
+    "logistics and transportation",
+    "professional services",
+  ],
+  authors: [{ name: siteName }],
+  creator: siteName,
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName,
+    title: `${siteName} | Delivering Trust`,
+    description: siteDescription,
+    images: [
       {
-        url: '/logo.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/Asset.svg',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/Asset.svg',
-        type: 'image/svg+xml',
+        url: `${siteUrl}/images/hero-bg.jpg`,
+        width: 1200,
+        height: 630,
+        alt: `${siteName} - Mining, Construction & Professional Services`,
       },
     ],
-    apple: '/Asset.svg',
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteName} | Delivering Trust`,
+    description: siteDescription,
+    images: [`${siteUrl}/images/hero-bg.jpg`],
+  },
+  alternates: {
+    canonical: siteUrl,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: "/icon.svg",
   },
 }
 
@@ -38,16 +76,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${poppins.className} font-sans antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+    <html lang="en" className={`${sora.variable} ${dmSans.variable}`}>
+      <body className={`${dmSans.className} antialiased`}>
+        <HashScrollHandler />
+        <div className="pt-[68px]">{children}</div>
         <Analytics />
       </body>
     </html>

@@ -1,117 +1,158 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
 
 const navItems = [
-  { label: "Home", href: "/#home" },
-  { label: "About Us", href: "/about" },
-  { label: "Services", href: "/#services" },
-  { label: "Careers", href: "/#careers" },
-  { label: "Contact Us", href: "/#contact" },
-]
+  { label: "Home", href: "/", match: "home" as const },
+  { label: "About Us", href: "/#about", match: "hash-about" as const },
+  { label: "Services", href: "/#services", match: "hash-services" as const },
+  { label: "Careers", href: "/#careers", match: "hash-careers" as const },
+] as const
+
+type NavMatch = (typeof navItems)[number]["match"]
+
+function isNavActive(match: NavMatch, pathname: string, hash: string) {
+  const h = (hash || "").toLowerCase()
+  if (pathname !== "/") return false
+  switch (match) {
+    case "home":
+      return h === "" || h === "#" || h === "#home"
+    case "hash-about":
+      return h === "#about"
+    case "hash-services":
+      return h === "#services"
+    case "hash-careers":
+      return h === "#careers"
+    default:
+      return false
+  }
+}
+
+function hashFromHref(href: string): string {
+  const i = href.indexOf("#")
+  return i >= 0 ? href.slice(i).toLowerCase() : ""
+}
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
+  const [hash, setHash] = useState("")
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+    const sync = () => {
+      setHash(
+        typeof window !== "undefined" ? window.location.hash.toLowerCase() : "",
+      )
     }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    sync()
+    window.addEventListener("hashchange", sync)
+    window.addEventListener("popstate", sync)
+    return () => {
+      window.removeEventListener("hashchange", sync)
+      window.removeEventListener("popstate", sync)
+    }
+  }, [pathname])
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      setHash(
+        typeof window !== "undefined" ? window.location.hash.toLowerCase() : "",
+      )
+    })
+    return () => cancelAnimationFrame(id)
+  }, [pathname])
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
-        isScrolled
-          ? "bg-background/95 backdrop-blur-md shadow-sm py-3"
-          : "bg-transparent py-5"
-      }`}
-    >
-      <div className="container mx-auto px-6 flex items-center justify-between">
-        <Link href="/" className="flex items-center">
+    <header className="site-header">
+      <div className="page-container flex w-full items-center justify-between">
+        <Link href="/" className="flex shrink-0 items-center">
           <Image
             src="/logo.png"
             alt="Mihreen LLC"
             width={140}
             height={50}
-            className="h-10 w-auto"
+            className="h-9 w-auto md:h-10"
             loading="eager"
             priority
           />
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
           {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
-              className={`text-[15px] font-medium transition-colors duration-300 hover:text-primary ${
-                isScrolled ? "text-foreground" : "text-foreground/80"
-              }`}
+              className={
+                isNavActive(item.match, pathname, hash) ? "nav-active" : undefined
+              }
+              onClick={() => {
+                if (!item.href.includes("#")) setHash("")
+                else setHash(hashFromHref(item.href))
+              }}
             >
               {item.label}
             </Link>
           ))}
-          <ThemeToggle />
-          <Button
-            asChild
-            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6 transition-all duration-300 hover:shadow-lg hover:scale-105"
-          >
-            <Link href="/#contact">Contact Us</Link>
-          </Button>
+          <Link href="/#contact" className="btn-primary ml-2">
+            Contact Us
+          </Link>
         </nav>
 
-        {/* Mobile Controls */}
-        <div className="lg:hidden flex items-center gap-2">
-          <ThemeToggle />
+        <div className="flex items-center gap-2 lg:hidden">
           <button
-            className="p-2"
+            type="button"
+            className="p-2 text-[var(--text-heading)]"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
             {isMobileMenuOpen ? (
-              <X className="h-6 w-6 text-foreground" />
+              <X className="h-6 w-6" aria-hidden />
             ) : (
-              <Menu className="h-6 w-6 text-foreground" />
+              <Menu className="h-6 w-6" aria-hidden />
             )}
           </button>
         </div>
       </div>
 
-      {/* Mobile Navigation */}
       <div
-        className={`lg:hidden absolute top-full left-0 right-0 bg-background/98 backdrop-blur-md transition-all duration-300 overflow-hidden ${
-          isMobileMenuOpen ? "max-h-96 border-b border-border" : "max-h-0"
+        className={`overflow-hidden border-b border-[var(--border)] bg-[#FFFFFF] transition-[max-height] duration-300 ease-out lg:hidden ${
+          isMobileMenuOpen ? "max-h-[28rem]" : "max-h-0 border-b-0"
         }`}
       >
-        <nav className="container mx-auto px-6 py-4 flex flex-col gap-4">
+        <nav className="page-container flex flex-col gap-2 py-4" aria-label="Mobile">
           {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
-              className="text-foreground hover:text-primary transition-colors py-2"
-              onClick={() => setIsMobileMenuOpen(false)}
+              className={
+                isNavActive(item.match, pathname, hash)
+                  ? "nav-active rounded-[var(--radius-sm)] px-3.5 py-2"
+                  : "rounded-[var(--radius-sm)] px-3.5 py-2 font-[family-name:var(--font-body)] text-sm text-[var(--text-body)] transition-colors hover:bg-[var(--blue-light)] hover:text-[var(--blue)]"
+              }
+              onClick={() => {
+                setIsMobileMenuOpen(false)
+                if (!item.href.includes("#")) setHash("")
+                else setHash(hashFromHref(item.href))
+              }}
             >
               {item.label}
             </Link>
           ))}
-          <Button
-            asChild
-            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full mt-2"
+          <Link
+            href="/#contact"
+            className="btn-primary mt-2 w-fit px-8"
+            onClick={() => {
+              setIsMobileMenuOpen(false)
+              setHash("#contact")
+            }}
           >
-            <Link href="/#contact" onClick={() => setIsMobileMenuOpen(false)}>
-              Contact Us
-            </Link>
-          </Button>
+            Contact Us
+          </Link>
         </nav>
       </div>
     </header>

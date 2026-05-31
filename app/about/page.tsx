@@ -1,13 +1,18 @@
-import { Header } from "@/components/header"
-import { AboutSection } from "@/components/about-section"
-import { Footer } from "@/components/footer"
+"use client"
+
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 export default function AboutPage() {
+  const router = useRouter()
+
+  useEffect(() => {
+    router.replace("/#about")
+  }, [router])
+
   return (
-    <main className="min-h-screen overflow-x-hidden">
-      <Header />
-      <AboutSection />
-      <Footer />
-    </main>
+    <div className="page-container flex min-h-[50vh] items-center justify-center text-[15px] text-[var(--text-muted)]">
+      Redirecting…
+    </div>
   )
 }

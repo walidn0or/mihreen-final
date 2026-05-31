@@ -2,10 +2,10 @@
 
 import { useRef, useState } from "react"
 import { useInView } from "@/hooks/use-in-view"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Mail, Phone, MapPin, Send, ArrowRight } from "lucide-react"
+import Link from "next/link"
 
 const INITIAL_FORM_STATE = {
   name: "",
@@ -14,7 +14,7 @@ const INITIAL_FORM_STATE = {
 }
 
 export function ContactSection() {
-  const sectionRef = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
   const isInView = useInView(sectionRef, { threshold: 0.1 })
   const [formData, setFormData] = useState(INITIAL_FORM_STATE)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -29,7 +29,7 @@ export function ContactSection() {
 
     const mailtoSubject = encodeURIComponent("Website Inquiry")
     const mailtoBody = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
+      `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`,
     )
     const mailtoUrl = `mailto:info@mihreenllc.us?subject=${mailtoSubject}&body=${mailtoBody}`
 
@@ -44,122 +44,132 @@ export function ContactSection() {
     <section
       id="contact"
       ref={sectionRef}
-      className="py-24 md:py-32 bg-background relative overflow-hidden"
+      className="relative overflow-hidden bg-[var(--bg-off)]"
     >
-      <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-muted/40 dark:from-muted/20 to-transparent pointer-events-none" />
+      <div className="pointer-events-none absolute top-0 left-0 h-1/2 w-full bg-gradient-to-b from-[var(--blue-light)] to-transparent" />
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="page-container relative z-10">
         <div
-          className={`text-center max-w-3xl mx-auto mb-16 transition-all duration-1000 ${
-            isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          className={`section-intro-block mb-16 transition-all duration-1000 ${
+            isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
         >
-          <span className="text-xs md:text-sm font-semibold text-secondary uppercase tracking-[0.18em] mb-4 block">Contact Us</span>
-          <h2 className="section-title text-3xl md:text-4xl lg:text-5xl text-foreground mb-6 text-balance">
-            Get in Touch
-          </h2>
-          <p className="text-muted-foreground text-base md:text-lg leading-8">
+          <span className="label-tag">Contact Us</span>
+          <h2 className="section-title">Get in Touch</h2>
+          <p className="section-subtitle mb-0">
             We are ready to support your business needs.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+        <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-14">
           <div
-            className={`transition-all duration-1000 delay-200 ${
+            className={`transition-all duration-1000 delay-100 ${
               isInView
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 -translate-x-10"
+                ? "translate-x-0 opacity-100"
+                : "-translate-x-10 opacity-0"
             }`}
           >
             <form
               onSubmit={handleSubmit}
-              className="bg-card rounded-3xl p-8 lg:p-10 border border-border shadow-lg"
+              className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[#FFFFFF] p-8 shadow-[0_8px_32px_rgba(0,0,0,0.06)] lg:p-10"
             >
               <div className="space-y-6">
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+                    <label
+                      htmlFor="name"
+                      className="mb-2 block text-sm font-medium text-[var(--text-heading)]"
+                    >
                       Name
                     </label>
                     <Input
                       id="name"
                       name="name"
                       value={formData.name}
-                      onChange={(event) => handleChange("name", event.target.value)}
+                      onChange={(event) =>
+                        handleChange("name", event.target.value)
+                      }
                       type="text"
                       placeholder="Your name"
                       required
-                      className="h-12 rounded-xl border-border focus:border-primary focus:ring-primary"
+                      className="h-12 rounded-[var(--radius-md)] border-[var(--border)] focus-visible:border-[var(--blue)] focus-visible:ring-[var(--blue)]"
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+                    <label
+                      htmlFor="email"
+                      className="mb-2 block text-sm font-medium text-[var(--text-heading)]"
+                    >
                       Email
                     </label>
                     <Input
                       id="email"
                       name="email"
                       value={formData.email}
-                      onChange={(event) => handleChange("email", event.target.value)}
+                      onChange={(event) =>
+                        handleChange("email", event.target.value)
+                      }
                       type="email"
                       placeholder="your@email.com"
                       required
-                      className="h-12 rounded-xl border-border focus:border-primary focus:ring-primary"
+                      className="h-12 rounded-[var(--radius-md)] border-[var(--border)] focus-visible:border-[var(--blue)] focus-visible:ring-[var(--blue)]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
+                  <label
+                    htmlFor="message"
+                    className="mb-2 block text-sm font-medium text-[var(--text-heading)]"
+                  >
                     Message
                   </label>
                   <Textarea
                     id="message"
                     name="message"
                     value={formData.message}
-                    onChange={(event) => handleChange("message", event.target.value)}
+                    onChange={(event) =>
+                      handleChange("message", event.target.value)
+                    }
                     placeholder="Type your message"
-                    rows={5}
+                    rows={6}
                     required
-                    className="rounded-xl border-border focus:border-primary focus:ring-primary resize-none"
+                    className="min-h-[132px] resize-none rounded-[var(--radius-md)] border-[var(--border)] focus-visible:border-[var(--blue)] focus-visible:ring-[var(--blue)]"
                   />
                 </div>
 
-                <Button
+                <button
                   type="submit"
-                  size="lg"
                   disabled={isSubmitting}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 group"
+                  className="btn-primary h-12 w-full justify-center rounded-[var(--radius-md)] px-6 text-[15px] disabled:pointer-events-none disabled:opacity-60"
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                      <span className="size-5 animate-spin rounded-full border-2 border-white/35 border-t-white" />
                       Sending...
                     </>
                   ) : (
                     <>
                       Submit
-                      <Send className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      <Send className="size-4" aria-hidden />
                     </>
                   )}
-                </Button>
+                </button>
               </div>
             </form>
           </div>
 
           <div
-            className={`transition-all duration-1000 delay-400 ${
+            className={`transition-all duration-1000 delay-200 ${
               isInView
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 translate-x-10"
+                ? "translate-x-0 opacity-100"
+                : "translate-x-10 opacity-0"
             }`}
           >
             <div className="space-y-8">
               <div>
-                <h3 className="text-2xl font-bold text-foreground mb-4 leading-tight">
-                  Contact Details
-                </h3>
-                <p className="text-muted-foreground leading-7">
+                <h3 className="card-title text-[18px]">Contact Details</h3>
+                <p className="mb-0 text-[16px] text-[var(--text-body)]">
                   Contact us through any of the channels below.
                 </p>
               </div>
@@ -185,21 +195,23 @@ export function ContactSection() {
                     href: null,
                   },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-start gap-4 group">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
-                      <item.icon className="w-5 h-5 text-primary group-hover:text-white transition-colors duration-300" />
+                  <div key={item.label} className="flex gap-4">
+                    <div className="flex size-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--blue-light)] text-[var(--blue)] transition-colors hover:bg-[var(--blue)] hover:text-white">
+                      <item.icon className="size-5" aria-hidden />
                     </div>
                     <div>
-                      <span className="text-sm text-muted-foreground">{item.label}</span>
+                      <span className="text-sm text-[var(--text-muted)]">
+                        {item.label}
+                      </span>
                       {item.href ? (
                         <a
                           href={item.href}
-                          className="block text-foreground font-medium hover:text-primary transition-colors whitespace-pre-line"
+                          className="block font-medium text-[var(--text-heading)] text-sm hover:text-[var(--green)]"
                         >
                           {item.value}
                         </a>
                       ) : (
-                        <p className="text-foreground font-medium whitespace-pre-line">
+                        <p className="text-sm font-medium text-[var(--text-heading)] whitespace-pre-line">
                           {item.value}
                         </p>
                       )}
@@ -208,18 +220,18 @@ export function ContactSection() {
                 ))}
               </div>
 
-              <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 text-white mt-8">
-                <h4 className="font-bold text-lg mb-2">Ready to Get Started?</h4>
-                <p className="text-white/80 text-sm mb-4">
+              <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[#FFFFFF] p-7">
+                <h4 className="card-title text-[17px]">Ready to Get Started?</h4>
+                <p className="mb-6 text-[15px] text-[var(--text-body)]">
                   Contact us today to discuss your project needs.
                 </p>
-                <a
+                <Link
                   href="mailto:info@mihreenllc.us"
-                  className="inline-flex items-center text-sm font-semibold group"
+                  className="inline-flex items-center text-sm font-semibold text-[var(--green)] transition-[gap] duration-200 hover:gap-2"
                 >
                   Contact Us Today
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </a>
+                  <ArrowRight className="ml-1 size-4" aria-hidden />
+                </Link>
               </div>
             </div>
           </div>
