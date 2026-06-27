@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -14,57 +14,151 @@ const navItems = [
   { label: "Careers", href: "/#careers", match: "hash-careers" as const },
 ] as const
 
-type NavMatch = (typeof navItems)[number]["match"]
+const SECTION_IDS = ["home", "about", "services", "careers"] as const
 
-function isNavActive(match: NavMatch, pathname: string, hash: string) {
-  const h = (hash || "").toLowerCase()
-  if (pathname !== "/") return false
-  switch (match) {
-    case "home":
-      return h === "" || h === "#" || h === "#home"
-    case "hash-about":
-      return h === "#about"
-    case "hash-services":
-      return h === "#services"
-    case "hash-careers":
-      return h === "#careers"
-    default:
-      return false
-  }
+type NavMatch = (typeof navItems)[number]["match"]
+type SectionId = (typeof SECTION_IDS)[number]
+
+const matchToSection: Record<NavMatch, SectionId> = {
+  home: "home",
+  "hash-about": "about",
+  "hash-services": "services",
+  "hash-careers": "careers",
 }
 
-function hashFromHref(href: string): string {
-  const i = href.indexOf("#")
-  return i >= 0 ? href.slice(i).toLowerCase() : ""
+const HEADER_OFFSET = 80
+
+function sectionFromHash(hash: string): SectionId | null {
+  const h = (hash || "").toLowerCase()
+  if (h === "" || h === "#" || h === "#home") return "home"
+  if (h === "#about") return "about"
+  if (h === "#services") return "services"
+  if (h === "#careers") return "careers"
+  return null
+}
+
+function parseNavSectionFromHref(href: string | null): SectionId | null {
+  if (!href) return null
+
+  const trimmed = href.trim()
+  if (trimmed === "/" || trimmed === "/#" || trimmed === "#") return "home"
+
+  const hashIndex = trimmed.indexOf("#")
+  if (hashIndex === -1) return null
+
+  return sectionFromHash(trimmed.slice(hashIndex))
+}
+
+function isNavActive(
+  match: NavMatch,
+  pathname: string,
+  activeSection: SectionId | null,
+) {
+  if (pathname === "/services") return match === "hash-services"
+  if (pathname !== "/") return false
+  return matchToSection[match] === (activeSection ?? "home")
+}
+
+function getActiveSectionFromScroll(): SectionId {
+  const scrollPos = window.scrollY + HEADER_OFFSET
+  let current: SectionId = "home"
+
+  for (const id of SECTION_IDS) {
+    const el = document.getElementById(id)
+    if (el && el.offsetTop <= scrollPos) {
+      current = id
+    }
+  }
+
+  return current
 }
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const [hash, setHash] = useState("")
+  const [activeSection, setActiveSection] = useState<SectionId | null>(null)
+  const pendingSectionRef = useRef<SectionId | null>(null)
+
+  const setNavSection = (section: SectionId, pending = true) => {
+    setActiveSection(section)
+    pendingSectionRef.current = pending ? section : null
+  }
 
   useEffect(() => {
-    const sync = () => {
-      setHash(
-        typeof window !== "undefined" ? window.location.hash.toLowerCase() : "",
-      )
+    if (pathname === "/services") {
+      pendingSectionRef.current = null
+      setActiveSection("services")
+      return
     }
-    sync()
-    window.addEventListener("hashchange", sync)
-    window.addEventListener("popstate", sync)
+
+    if (pathname !== "/") {
+      pendingSectionRef.current = null
+      setActiveSection(null)
+      return
+    }
+
+    const syncFromHash = () => {
+      const fromHash = sectionFromHash(window.location.hash)
+      if (fromHash) {
+        setNavSection(fromHash)
+        return
+      }
+
+      pendingSectionRef.current = null
+      setActiveSection(getActiveSectionFromScroll())
+    }
+
+    syncFromHash()
+    window.addEventListener("hashchange", syncFromHash)
+    window.addEventListener("popstate", syncFromHash)
     return () => {
-      window.removeEventListener("hashchange", sync)
-      window.removeEventListener("popstate", sync)
+      window.removeEventListener("hashchange", syncFromHash)
+      window.removeEventListener("popstate", syncFromHash)
     }
   }, [pathname])
 
   useEffect(() => {
-    const id = requestAnimationFrame(() => {
-      setHash(
-        typeof window !== "undefined" ? window.location.hash.toLowerCase() : "",
-      )
-    })
-    return () => cancelAnimationFrame(id)
+    if (pathname !== "/") return
+
+    const handleSectionLinkClick = (event: MouseEvent) => {
+      const anchor = (event.target as Element | null)?.closest("a")
+      if (!anchor) return
+
+      const section = parseNavSectionFromHref(anchor.getAttribute("href"))
+      if (!section) return
+
+      setNavSection(section)
+    }
+
+    document.addEventListener("click", handleSectionLinkClick, true)
+    return () => document.removeEventListener("click", handleSectionLinkClick, true)
+  }, [pathname])
+
+  useEffect(() => {
+    if (pathname !== "/") return
+
+    const updateFromScroll = () => {
+      const pending = pendingSectionRef.current
+      const scrolledSection = getActiveSectionFromScroll()
+
+      if (pending) {
+        if (scrolledSection !== pending) {
+          setActiveSection(pending)
+          return
+        }
+        pendingSectionRef.current = null
+      }
+
+      setActiveSection(scrolledSection)
+    }
+
+    updateFromScroll()
+    window.addEventListener("scroll", updateFromScroll, { passive: true })
+    window.addEventListener("resize", updateFromScroll, { passive: true })
+    return () => {
+      window.removeEventListener("scroll", updateFromScroll)
+      window.removeEventListener("resize", updateFromScroll)
+    }
   }, [pathname])
 
   return (
@@ -88,12 +182,11 @@ export function Header() {
               key={item.label}
               href={item.href}
               className={
-                isNavActive(item.match, pathname, hash) ? "nav-active" : undefined
+                isNavActive(item.match, pathname, activeSection)
+                  ? "nav-active"
+                  : undefined
               }
-              onClick={() => {
-                if (!item.href.includes("#")) setHash("")
-                else setHash(hashFromHref(item.href))
-              }}
+              onClick={() => setNavSection(parseNavSectionFromHref(item.href) ?? "home")}
             >
               {item.label}
             </Link>
@@ -121,7 +214,7 @@ export function Header() {
       </div>
 
       <div
-        className={`overflow-hidden border-b border-[var(--border)] bg-[#FFFFFF] transition-[max-height] duration-300 ease-out lg:hidden ${
+        className={`site-header-mobile-nav overflow-hidden border-b transition-[max-height] duration-300 ease-out lg:hidden ${
           isMobileMenuOpen ? "max-h-[28rem]" : "max-h-0 border-b-0"
         }`}
       >
@@ -131,14 +224,13 @@ export function Header() {
               key={item.label}
               href={item.href}
               className={
-                isNavActive(item.match, pathname, hash)
-                  ? "nav-active rounded-[var(--radius-sm)] px-3.5 py-2"
-                  : "rounded-[var(--radius-sm)] px-3.5 py-2 font-[family-name:var(--font-body)] text-sm text-[var(--text-body)] transition-colors hover:bg-[var(--blue-light)] hover:text-[var(--blue)]"
+                isNavActive(item.match, pathname, activeSection)
+                  ? "nav-active"
+                  : undefined
               }
               onClick={() => {
                 setIsMobileMenuOpen(false)
-                if (!item.href.includes("#")) setHash("")
-                else setHash(hashFromHref(item.href))
+                setNavSection(parseNavSectionFromHref(item.href) ?? "home")
               }}
             >
               {item.label}
@@ -147,10 +239,7 @@ export function Header() {
           <Link
             href="/#contact"
             className="btn-primary mt-2 w-fit px-8"
-            onClick={() => {
-              setIsMobileMenuOpen(false)
-              setHash("#contact")
-            }}
+            onClick={() => setIsMobileMenuOpen(false)}
           >
             Contact Us
           </Link>

@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: `${siteUrl}/images/hero-bg.jpg`,
+        url: `${siteUrl}/background.jpg`,
         width: 1200,
         height: 630,
         alt: `${siteName} - Mining, Construction & Professional Services`,
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${siteName} | Delivering Trust`,
     description: siteDescription,
-    images: [`${siteUrl}/images/hero-bg.jpg`],
+    images: [`${siteUrl}/background.jpg`],
   },
   alternates: {
     canonical: siteUrl,

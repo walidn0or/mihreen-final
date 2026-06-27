@@ -4,8 +4,7 @@ import { useRef, useState } from "react"
 import { useInView } from "@/hooks/use-in-view"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Mail, Phone, MapPin, Send, ArrowRight } from "lucide-react"
-import Link from "next/link"
+import { Mail, Phone, MapPin, Send } from "lucide-react"
 
 const INITIAL_FORM_STATE = {
   name: "",
@@ -44,10 +43,8 @@ export function ContactSection() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative overflow-hidden bg-[var(--bg-off)]"
+      className="section-bloom relative overflow-hidden"
     >
-      <div className="pointer-events-none absolute top-0 left-0 h-1/2 w-full bg-gradient-to-b from-[var(--blue-light)] to-transparent" />
-
       <div className="page-container relative z-10">
         <div
           className={`section-intro-block mb-16 transition-all duration-1000 ${
@@ -71,7 +68,7 @@ export function ContactSection() {
           >
             <form
               onSubmit={handleSubmit}
-              className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[#FFFFFF] p-8 shadow-[0_8px_32px_rgba(0,0,0,0.06)] lg:p-10"
+              className="glass-surface rounded-[var(--radius-lg)] p-8 lg:p-10"
             >
               <div className="space-y-6">
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -194,9 +191,19 @@ export function ContactSection() {
                     value: "145 century Dr Alexandria VA",
                     href: null,
                   },
-                ].map((item) => (
+                ].map((item, index) => {
+                  const iconTone =
+                    index === 0
+                      ? "contact-detail-icon--sky"
+                      : index === 1
+                        ? "contact-detail-icon--mint"
+                        : "contact-detail-icon--soft"
+
+                  return (
                   <div key={item.label} className="flex gap-4">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--blue-light)] text-[var(--blue)] transition-colors hover:bg-[var(--blue)] hover:text-white">
+                    <div
+                      className={`contact-detail-icon flex size-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] transition-colors ${iconTone}`}
+                    >
                       <item.icon className="size-5" aria-hidden />
                     </div>
                     <div>
@@ -217,21 +224,8 @@ export function ContactSection() {
                       )}
                     </div>
                   </div>
-                ))}
-              </div>
-
-              <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[#FFFFFF] p-7">
-                <h4 className="card-title text-[17px]">Ready to Get Started?</h4>
-                <p className="mb-6 text-[15px] text-[var(--text-body)]">
-                  Contact us today to discuss your project needs.
-                </p>
-                <Link
-                  href="mailto:info@mihreenllc.us"
-                  className="inline-flex items-center text-sm font-semibold text-[var(--green)] transition-[gap] duration-200 hover:gap-2"
-                >
-                  Contact Us Today
-                  <ArrowRight className="ml-1 size-4" aria-hidden />
-                </Link>
+                  )
+                })}
               </div>
             </div>
           </div>

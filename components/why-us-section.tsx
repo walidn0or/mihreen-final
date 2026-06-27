@@ -28,7 +28,7 @@ export function WhyUsSection() {
   const isInView = useInView(sectionRef, { threshold: 0.1 })
 
   return (
-    <section id="why" ref={sectionRef} className="why-section">
+    <section id="why" ref={sectionRef} className="why-section section-bloom">
       <div
         className="why-section-glow why-section-glow--blue"
         aria-hidden

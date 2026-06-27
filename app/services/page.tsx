@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <main className="min-h-screen overflow-x-hidden">
+    <main className="site-main min-h-screen overflow-x-hidden">
       <Header />
       <ServicesSection />
       <Footer />

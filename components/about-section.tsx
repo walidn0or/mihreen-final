@@ -36,7 +36,7 @@ export function AboutSection() {
     <section
       id="about"
       ref={sectionRef}
-      className="relative overflow-hidden"
+      className="section-bloom relative overflow-hidden"
     >
       <div className="page-container">
         <div
@@ -44,7 +44,6 @@ export function AboutSection() {
             isInView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
         >
-          <span className="label-tag">About Mihreen LLC</span>
           <h2 className="section-title mb-14 section-intro-block">
             Company Overview
           </h2>
@@ -66,21 +65,21 @@ export function AboutSection() {
             </p>
           </div>
 
-          <div className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[#FFFFFF] p-8 md:p-10">
+          <div className="glass-surface glass-surface--sky rounded-[var(--radius-md)] p-8 md:p-10">
             <h3 className="card-title mb-6">Our Core Services</h3>
-            <ul className="grid gap-3 text-left md:grid-cols-2">
-              <li className="rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--bg-white)] px-4 py-3 text-[15px] text-[var(--text-body)]">
+            <ul className="about-service-list grid gap-3 text-left md:grid-cols-2">
+              <li className="about-service-item rounded-[var(--radius-sm)] px-4 py-3 text-[15px] text-[var(--text-body)]">
                 Mining Extraction — Efficient and responsible resource
                 development
               </li>
-              <li className="rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--bg-white)] px-4 py-3 text-[15px] text-[var(--text-body)]">
+              <li className="about-service-item rounded-[var(--radius-sm)] px-4 py-3 text-[15px] text-[var(--text-body)]">
                 Construction &amp; Rehabilitation — Durable construction
                 solutions
               </li>
-              <li className="rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--bg-white)] px-4 py-3 text-[15px] text-[var(--text-body)]">
+              <li className="about-service-item rounded-[var(--radius-sm)] px-4 py-3 text-[15px] text-[var(--text-body)]">
                 Procurement &amp; Supply — Reliable procurement and supply
               </li>
-              <li className="rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--bg-white)] px-4 py-3 text-[15px] text-[var(--text-body)]">
+              <li className="about-service-item rounded-[var(--radius-sm)] px-4 py-3 text-[15px] text-[var(--text-body)]">
                 Logistics &amp; Transportation — Safe and timely delivery
                 services
               </li>
@@ -104,7 +103,7 @@ export function AboutSection() {
             </div>
           </div>
 
-          <div className="mt-12 rounded-[var(--radius-lg)] border border-[var(--blue-mid)] bg-gradient-to-r from-[var(--blue-light)] to-transparent px-8 py-6">
+          <div className="about-inline-cta mt-12 rounded-[var(--radius-lg)] px-8 py-6">
             <p className="text-[16px] leading-[1.78] text-[var(--text-body)]">
               Partner with Mihreen LLC for reliable and professional solutions.
               Contact us today to discuss your project needs.

@@ -1,11 +1,48 @@
 "use client"
 
+import { useCallback, useEffect, useState } from "react"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 
+const HERO_BACKGROUNDS = [
+  "/background.jpg",
+  "/background -1.jpg",
+  "/background -2.jpg",
+].map((path) => encodeURI(path))
+
+const SLIDE_INTERVAL_MS = 4000
+
 export function Hero() {
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  const goToSlide = useCallback((index: number) => {
+    setActiveIndex(index)
+  }, [])
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setActiveIndex((prev) => (prev + 1) % HERO_BACKGROUNDS.length)
+    }, SLIDE_INTERVAL_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [activeIndex])
+
   return (
-    <section id="home" aria-labelledby="hero-heading">
+    <section
+      id="home"
+      className="section-bloom hero-slideshow-section"
+      aria-labelledby="hero-heading"
+    >
+      <div className="hero-bg-slideshow" aria-hidden="true">
+        {HERO_BACKGROUNDS.map((src, index) => (
+          <div
+            key={src}
+            className={`hero-bg-slide${index === activeIndex ? " hero-bg-slide--active" : ""}`}
+            style={{ backgroundImage: `url("${src}")` }}
+          />
+        ))}
+      </div>
+
       <div id="hero" className="w-full">
         <div className="page-container relative z-10 flex min-h-[calc(100vh-68px)] items-center py-14 md:py-16">
           <div className="w-full max-w-2xl">
@@ -28,6 +65,24 @@ export function Hero() {
               </Link>
             </div>
           </div>
+        </div>
+
+        <div
+          className="hero-bg-dots"
+          role="tablist"
+          aria-label="Hero background slideshow"
+        >
+          {HERO_BACKGROUNDS.map((src, index) => (
+            <button
+              key={src}
+              type="button"
+              role="tab"
+              aria-selected={index === activeIndex}
+              aria-label={`Show background image ${index + 1} of ${HERO_BACKGROUNDS.length}`}
+              className={`hero-bg-dot${index === activeIndex ? " hero-bg-dot--active" : ""}`}
+              onClick={() => goToSlide(index)}
+            />
+          ))}
         </div>
       </div>
     </section>

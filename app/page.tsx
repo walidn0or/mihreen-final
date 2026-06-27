@@ -10,7 +10,7 @@ import { Footer } from "@/components/footer"
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-x-hidden">
+    <main className="site-main min-h-screen overflow-x-hidden">
       <Header />
       <Hero />
       <AboutSection />

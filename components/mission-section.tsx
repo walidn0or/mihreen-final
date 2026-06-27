@@ -12,7 +12,6 @@ export function MissionSection() {
     <section
       id="mission"
       ref={sectionRef}
-      className="bg-[var(--bg-white)]"
     >
       <div className="page-container">
         <div className="grid gap-8 md:grid-cols-2 lg:gap-12">

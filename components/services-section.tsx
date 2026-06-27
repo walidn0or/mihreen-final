@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import {
   Dialog,
   DialogContent,
@@ -165,7 +166,11 @@ function ServicePageModalContent({
   )
 }
 
-function MiningExtractionModalContent() {
+function MiningExtractionModalContent({
+  onContactClick,
+}: {
+  onContactClick: () => void
+}) {
   return (
     <div className="service-modal-doc">
       <DialogTitle className="service-modal-heading">
@@ -207,7 +212,10 @@ function MiningExtractionModalContent() {
           Partner with Mihreen LLC for dependable and efficient mining extraction
           services.
         </p>
-        <ContactSectionLink className="btn-primary service-modal-end-btn">
+        <ContactSectionLink
+          className="btn-primary service-modal-end-btn"
+          onBeforeNavigate={onContactClick}
+        >
           Contact Us
           <ArrowRight className="h-4 w-4" aria-hidden />
         </ContactSectionLink>
@@ -310,8 +318,12 @@ const services = [
 ]
 
 export function ServicesSection() {
+  const [openServiceTitle, setOpenServiceTitle] = useState<string | null>(null)
+
+  const closeServiceModal = () => setOpenServiceTitle(null)
+
   return (
-    <section id="services">
+    <section id="services" className="section-bloom">
       <div className="page-container">
         <div className="services-section-intro text-center mb-16">
           <h2 className="section-title">Our Services</h2>
@@ -330,7 +342,13 @@ export function ServicesSection() {
             const Icon = service.icon
 
             return (
-              <Dialog key={service.title}>
+              <Dialog
+                key={service.title}
+                open={openServiceTitle === service.title}
+                onOpenChange={(open) =>
+                  setOpenServiceTitle(open ? service.title : null)
+                }
+              >
                 <DialogTrigger asChild>
                   <button type="button" className="svc-card text-left cursor-pointer">
                     <div className="svc-icon">
@@ -352,7 +370,9 @@ export function ServicesSection() {
                   className="service-modal service-modal--detailed border-0 data-[state=open]:zoom-in-100 data-[state=closed]:zoom-out-100"
                 >
                   {service.modal === "mining" ? (
-                    <MiningExtractionModalContent />
+                    <MiningExtractionModalContent
+                      onContactClick={closeServiceModal}
+                    />
                   ) : (
                     <ServicePageModalContent {...service.pageContent} />
                   )}

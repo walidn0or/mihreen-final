@@ -24,7 +24,7 @@ export function CareersSection() {
   const isInView = useInView(sectionRef, { threshold: 0.1 })
 
   return (
-    <section id="careers" ref={sectionRef} className="careers-section">
+    <section id="careers" ref={sectionRef} className="careers-section section-bloom">
       <div
         className="careers-section-glow careers-section-glow--blue"
         aria-hidden
